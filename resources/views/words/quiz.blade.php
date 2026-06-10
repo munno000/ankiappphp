@@ -4,10 +4,10 @@
 
 <div class="card">
     <h2>訳を答えてください</h2>
-    <p>English: <strong>{{ $word['english'] }}</strong></p>
+    <p>English: <strong>{{ $word->english }}</strong></p>
     <form method="POST" action="/quiz/check">
         @csrf
-        <input type="hidden" name="english" value="{{ $word['english'] }}">
+        <input type="hidden" name="word_id" value="{{ $word->id }}">
         <div>
             <label>Japanese:</label>
             <input type="text" name="answer" required>

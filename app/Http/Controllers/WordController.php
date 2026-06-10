@@ -2,38 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Word;
 use Illuminate\Http\Request;
 
 class WordController extends Controller
 {
-    private function storagePath()
-    {
-        return storage_path('app/words.json');
-    }
-
-    private function loadWords()
-    {
-        $path = $this->storagePath();
-        if (!file_exists($path)) {
-            return [];
-        }
-        $json = file_get_contents($path);
-        $data = json_decode($json, true);
-        return is_array($data) ? $data : [];
-    }
-
-    private function saveWords(array $words)
-    {
-        $path = $this->storagePath();
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0755, true);
-        }
-        file_put_contents($path, json_encode(array_values($words), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    }
-
     public function index()
     {
-        $words = $this->loadWords();
+        $words = Word::all();
         return view('words.index', ['words' => $words]);
     }
 
@@ -44,50 +20,35 @@ class WordController extends Controller
             'japanese' => 'required|string|max:255',
         ]);
 
-        $words = $this->loadWords();
-        $words[] = [
-            'english' => $request->input('english'),
-            'japanese' => $request->input('japanese'),
-        ];
-        $this->saveWords($words);
+        Word::create($request->only('english', 'japanese'));
 
         return redirect()->back()->with('success', '単語を追加しました');
     }
 
     public function quiz()
     {
-        $words = $this->loadWords();
-        if (empty($words)) {
+        $word = Word::inRandomOrder()->first();
+        if (!$word) {
             return redirect('/words')->with('error', 'まずは単語を追加してください');
         }
-        $idx = array_rand($words);
-        $word = $words[$idx];
         return view('words.quiz', ['word' => $word]);
     }
 
     public function check(Request $request)
     {
         $request->validate([
-            'english' => 'required|string',
+            'word_id' => 'required|integer',
             'answer' => 'required|string',
         ]);
 
-        $english = $request->input('english');
-        $answer = trim($request->input('answer'));
-        $words = $this->loadWords();
-        $found = null;
-        foreach ($words as $w) {
-            if (isset($w['english']) && $w['english'] === $english) {
-                $found = $w;
-                break;
-            }
-        }
-
-        if (!$found) {
+        $word = Word::find($request->input('word_id'));
+        if (!$word) {
             return redirect('/quiz')->with('error', '単語が見つかりませんでした');
         }
 
-        $correct = trim($found['japanese']) === $answer;
-        return redirect('/quiz')->with('result', $correct ? '正解！' : '不正解: 正しい訳は「' . $found['japanese'] . '」です');
+        $correct = trim($word->japanese) === trim($request->input('answer'));
+        $message = $correct ? '正解！' : '不正解: 正しい訳は「' . $word->japanese . '」です';
+
+        return redirect('/quiz')->with('result', $message);
     }
 }

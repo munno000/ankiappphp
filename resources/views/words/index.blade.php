@@ -22,14 +22,14 @@
 
 <div class="card">
     <h2>単語一覧</h2>
-    @if(empty($words))
+    @if($words->isEmpty())
         <p>まだ単語が登録されていません。</p>
     @else
         <table>
             <thead><tr><th>English</th><th>Japanese</th></tr></thead>
             <tbody>
             @foreach($words as $w)
-                <tr><td>{{ $w['english'] }}</td><td>{{ $w['japanese'] }}</td></tr>
+                <tr><td>{{ $w->english }}</td><td>{{ $w->japanese }}</td></tr>
             @endforeach
             </tbody>
         </table>
