@@ -4,7 +4,7 @@
 
 <div class="card">
     <h2>単語を追加</h2>
-    <form method="POST" action="/words">
+    <form method="POST" action="{{ url('/words') }}">
         @csrf
         <div>
             <label>English:</label>
@@ -34,7 +34,7 @@
             </tbody>
         </table>
     @endif
-    <p style="margin-top:12px"><a href="/quiz">クイズを始める</a></p>
+    <p style="margin-top:12px"><a href="{{ url('/quiz') }}">クイズを始める</a></p>
 </div>
 
 @endsection

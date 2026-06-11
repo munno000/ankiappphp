@@ -22,14 +22,14 @@ class WordController extends Controller
 
         Word::create($request->only('english', 'japanese'));
 
-        return redirect()->back()->with('success', '単語を追加しました');
+        return redirect(url('/words'))->with('success', '単語を追加しました');
     }
 
     public function quiz()
     {
         $word = Word::inRandomOrder()->first();
         if (!$word) {
-            return redirect('/words')->with('error', 'まずは単語を追加してください');
+            return redirect(url('/words'))->with('error', 'まずは単語を追加してください');
         }
         return view('words.quiz', ['word' => $word]);
     }
@@ -43,12 +43,12 @@ class WordController extends Controller
 
         $word = Word::find($request->input('word_id'));
         if (!$word) {
-            return redirect('/quiz')->with('error', '単語が見つかりませんでした');
+            return redirect(url('/quiz'))->with('error', '単語が見つかりませんでした');
         }
 
         $correct = trim($word->japanese) === trim($request->input('answer'));
         $message = $correct ? '正解！' : '不正解: 正しい訳は「' . $word->japanese . '」です';
 
-        return redirect('/quiz')->with('result', $message);
+        return redirect(url('/quiz'))->with('result', $message);
     }
 }
