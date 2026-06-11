@@ -2,14 +2,12 @@
 
 @section('content')
 
-<p><a href="{{ url('/sections') }}">← セクション一覧</a></p>
-
 <div class="card">
     <h2>単語を追加</h2>
     <form method="POST" action="{{ url('/words') }}">
         @csrf
-        <div>
-            <label>セクション:</label>
+        <div class="form-row">
+            <label>セクション</label>
             <select name="section_id" required>
                 <option value="">選択してください</option>
                 @foreach($sections as $s)
@@ -17,50 +15,51 @@
                 @endforeach
             </select>
         </div>
-        <div>
-            <label>English:</label>
-            <input type="text" name="english" required>
+        <div class="form-row">
+            <label>English</label>
+            <input type="text" name="english" required placeholder="例: apple">
         </div>
-        <div>
-            <label>Japanese:</label>
-            <input type="text" name="japanese" required>
+        <div class="form-row">
+            <label>Japanese</label>
+            <input type="text" name="japanese" required placeholder="例: りんご">
         </div>
-        <div style="margin-top:8px">
-            <button type="submit">追加</button>
-        </div>
+        <button type="submit" class="btn btn-blue">追加する</button>
     </form>
 </div>
 
 <div class="card">
     <h2>単語一覧</h2>
 
-    <div style="margin-bottom:12px">
-        <strong>セクション：</strong>
-        <a href="{{ url('/words') }}" @class(['active' => !$selectedSection])>すべて</a>
+    <div class="section-tabs">
+        <a href="{{ url('/words') }}" @class(['section-tab', 'active' => !$selectedSection])>すべて</a>
         @foreach($sections as $s)
-            <a href="{{ url('/words') }}?section={{ $s->id }}"
-               style="margin-left:8px" @class(['active' => $selectedSection == $s->id])>{{ $s->name }}</a>
+            <a href="{{ url('/words') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>{{ $s->name }}</a>
         @endforeach
     </div>
 
     @if($words->isEmpty())
-        <p>単語が登録されていません。</p>
+        <p style="color:#b0b8d0; text-align:center; padding:24px 0">単語が登録されていません</p>
     @else
         <table>
-            <thead><tr><th>Section</th><th>English</th><th>Japanese</th><th></th></tr></thead>
+            <thead>
+                <tr><th>Section</th><th>English</th><th>Japanese</th><th>操作</th></tr>
+            </thead>
             <tbody>
             @foreach($words as $w)
                 <tr>
-                    <td>{{ $w->section->name }}</td>
-                    <td>{{ $w->english }}</td>
+                    <td><span class="section-tab" style="padding:3px 10px; font-size:0.78rem">{{ $w->section->name }}</span></td>
+                    <td style="font-weight:600">{{ $w->english }}</td>
                     <td>{{ $w->japanese }}</td>
                     <td>
-                        <a href="{{ url('/words/' . $w->id . '/edit') }}">編集</a>
-                        <form method="POST" action="{{ url('/words/' . $w->id) }}" style="display:inline; margin-left:8px">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" onclick="return confirm('削除しますか？')">削除</button>
-                        </form>
+                        <div class="actions">
+                            <a href="{{ url('/words/' . $w->id . '/edit') }}" class="btn btn-outline btn-sm">編集</a>
+                            <form method="POST" action="{{ url('/words/' . $w->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('削除しますか？')">削除</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach
@@ -69,9 +68,9 @@
     @endif
 
     @if($selectedSection)
-        <p style="margin-top:12px">
-            <a href="{{ url('/quiz') }}?section={{ $selectedSection }}">このセクションのクイズを始める</a>
-        </p>
+        <div style="margin-top:20px; text-align:right">
+            <a href="{{ url('/quiz') }}?section={{ $selectedSection }}" class="btn btn-pink">このセクションでクイズ →</a>
+        </div>
     @endif
 </div>
 

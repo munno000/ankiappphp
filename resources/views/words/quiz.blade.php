@@ -2,31 +2,29 @@
 
 @section('content')
 
-<div class="card">
-    <div style="margin-bottom:12px">
-        <strong>セクション：</strong>
-        <a href="{{ url('/quiz') }}" @class(['active' => !$selectedSection])>すべて</a>
-        @foreach($sections as $s)
-            <a href="{{ url('/quiz') }}?section={{ $s->id }}"
-               style="margin-left:8px" @class(['active' => $selectedSection == $s->id])>{{ $s->name }}</a>
-        @endforeach
-    </div>
+<div class="section-tabs" style="margin-bottom:0">
+    <a href="{{ url('/quiz') }}" @class(['section-tab', 'active' => !$selectedSection])>すべて</a>
+    @foreach($sections as $s)
+        <a href="{{ url('/quiz') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>{{ $s->name }}</a>
+    @endforeach
+</div>
 
-    <h2>訳を答えてください</h2>
-    <p style="color:#666; font-size:0.9em">セクション: {{ $word->section->name }}</p>
-    <p>English: <strong>{{ $word->english }}</strong></p>
-    <form method="POST" action="{{ url('/quiz/check') }}">
+<div class="card" style="margin-top:16px; text-align:center">
+    <div class="quiz-section-label">{{ $word->section->name }}</div>
+    <div class="quiz-word">{{ $word->english }}</div>
+
+    <form method="POST" action="{{ url('/quiz/check') }}" style="max-width:360px; margin:0 auto">
         @csrf
         <input type="hidden" name="word_id" value="{{ $word->id }}">
         <input type="hidden" name="section" value="{{ $selectedSection }}">
-        <div>
-            <label>Japanese:</label>
-            <input type="text" name="answer" required autofocus>
+        <div class="form-row" style="margin-bottom:20px">
+            <label>日本語訳を入力</label>
+            <input type="text" name="answer" required autofocus placeholder="答えを入力...">
         </div>
-        <div style="margin-top:8px">
-            <button type="submit">チェック</button>
-            <a href="{{ url('/quiz') }}{{ $selectedSection ? '?section=' . $selectedSection : '' }}" style="margin-left:8px">次の問題</a>
-            <a href="{{ url('/words') }}{{ $selectedSection ? '?section=' . $selectedSection : '' }}" style="margin-left:8px">単語一覧へ</a>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+            <button type="submit" class="btn btn-pink">チェック ✓</button>
+            <a href="{{ url('/quiz') }}{{ $selectedSection ? '?section=' . $selectedSection : '' }}" class="btn btn-blue">次の問題 →</a>
+            <a href="{{ url('/words') }}{{ $selectedSection ? '?section=' . $selectedSection : '' }}" class="btn btn-outline">単語一覧</a>
         </div>
     </form>
 </div>
