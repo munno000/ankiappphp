@@ -1,4 +1,4 @@
-AddHandler x-httpd-php84 .php
+AddHandler x-httpd-php83 .php
 
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
