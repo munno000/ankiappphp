@@ -10,6 +10,7 @@
         .card{border:1px solid #ddd;padding:16px;border-radius:6px;margin-bottom:12px}
         .success{color:green}
         .error{color:red}
+        .active{font-weight:bold}
     </style>
 </head>
 <body>
