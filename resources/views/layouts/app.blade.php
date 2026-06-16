@@ -259,7 +259,7 @@
 </header>
 <nav>
     <div class="nav-inner">
-        <a href="{{ url('/sections') }}" @class(['nav-active' => request()->is('sections*')])>セクション</a>
+        <a href="{{ url('/books') }}" @class(['nav-active' => request()->is('books*')])>ブック</a>
         <a href="{{ url('/words') }}" @class(['nav-active' => request()->is('words*')])>単語一覧</a>
         <a href="{{ url('/quiz') }}" @class(['nav-active' => request()->is('quiz*')])>クイズ</a>
     </div>

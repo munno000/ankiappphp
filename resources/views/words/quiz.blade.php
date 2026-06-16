@@ -2,15 +2,27 @@
 
 @section('content')
 
-<div class="section-tabs" style="margin-bottom:0">
+@if($currentSection)
+<div class="breadcrumb">
+    <a href="{{ url('/books') }}">ブック一覧</a> &rsaquo;
+    <a href="{{ url('/books/' . $currentSection->book_id . '/sections') }}">{{ $currentSection->book->name }}</a> &rsaquo;
+    {{ $currentSection->name }}
+</div>
+@endif
+
+<div class="section-tabs">
     <a href="{{ url('/quiz') }}" @class(['section-tab', 'active' => !$selectedSection])>すべて</a>
     @foreach($sections as $s)
-        <a href="{{ url('/quiz') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>{{ $s->name }}</a>
+        <a href="{{ url('/quiz') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>
+            {{ $s->name }}
+        </a>
     @endforeach
 </div>
 
 <div class="card" style="margin-top:16px; text-align:center">
-    <div class="quiz-section-label">{{ $word->section->name }}</div>
+    <div class="quiz-section-label">
+        {{ $word->section->book->name ?? '' }} &rsaquo; {{ $word->section->name }}
+    </div>
     <div class="quiz-word">{{ $word->english }}</div>
 
     <form method="POST" action="{{ url('/quiz/check') }}" style="max-width:360px; margin:0 auto">

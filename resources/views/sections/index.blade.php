@@ -2,14 +2,18 @@
 
 @section('content')
 
+<div class="breadcrumb">
+    <a href="{{ url('/books') }}">ブック一覧</a> &rsaquo; {{ $book->name }}
+</div>
+
 <div class="card">
     <h2>セクションを追加</h2>
-    <form method="POST" action="{{ url('/sections') }}">
+    <form method="POST" action="{{ url('/books/' . $book->id . '/sections') }}">
         @csrf
         <div class="form-row">
             <label>セクション名</label>
             <div style="display:flex; gap:10px">
-                <input type="text" name="name" required placeholder="例: TOEIC, 日常会話, 英検2級">
+                <input type="text" name="name" required placeholder="例: Section 1, Unit 1">
                 <button type="submit" class="btn btn-blue" style="white-space:nowrap">追加</button>
             </div>
         </div>
@@ -26,17 +30,13 @@
     @else
         <table>
             <thead>
-                <tr>
-                    <th>セクション名</th>
-                    <th>単語数</th>
-                    <th>操作</th>
-                </tr>
+                <tr><th>セクション名</th><th>単語数</th><th>操作</th></tr>
             </thead>
             <tbody>
             @foreach($sections as $section)
                 <tr>
                     <td>
-                        <form method="POST" action="{{ url('/sections/' . $section->id) }}" class="section-edit-form">
+                        <form method="POST" action="{{ url('/books/' . $book->id . '/sections/' . $section->id) }}" class="section-edit-form">
                             @csrf
                             @method('PUT')
                             <input type="text" name="name" value="{{ $section->name }}" required>
@@ -50,8 +50,9 @@
                     </td>
                     <td>
                         <div class="actions">
+                            <a href="{{ url('/words') }}?section={{ $section->id }}" class="btn btn-outline btn-sm">単語</a>
                             <a href="{{ url('/quiz') }}?section={{ $section->id }}" class="btn btn-pink btn-sm">クイズ</a>
-                            <form method="POST" action="{{ url('/sections/' . $section->id) }}">
+                            <form method="POST" action="{{ url('/books/' . $book->id . '/sections/' . $section->id) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm"

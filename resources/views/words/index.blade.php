@@ -2,6 +2,18 @@
 
 @section('content')
 
+@if($currentSection)
+<div class="breadcrumb">
+    <a href="{{ url('/books') }}">ブック一覧</a> &rsaquo;
+    <a href="{{ url('/books/' . $currentSection->book_id . '/sections') }}">{{ $currentSection->book->name }}</a> &rsaquo;
+    {{ $currentSection->name }}
+</div>
+@else
+<div class="breadcrumb">
+    <a href="{{ url('/books') }}">ブック一覧</a>
+</div>
+@endif
+
 <div class="card">
     <h2>単語を追加</h2>
     <form method="POST" action="{{ url('/words') }}">
@@ -11,7 +23,9 @@
             <select name="section_id" required>
                 <option value="">選択してください</option>
                 @foreach($sections as $s)
-                    <option value="{{ $s->id }}" {{ $selectedSection == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                    <option value="{{ $s->id }}" {{ $selectedSection == $s->id ? 'selected' : '' }}>
+                        {{ $s->book->name }} &rsaquo; {{ $s->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -33,7 +47,9 @@
     <div class="section-tabs">
         <a href="{{ url('/words') }}" @class(['section-tab', 'active' => !$selectedSection])>すべて</a>
         @foreach($sections as $s)
-            <a href="{{ url('/words') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>{{ $s->name }}</a>
+            <a href="{{ url('/words') }}?section={{ $s->id }}" @class(['section-tab', 'active' => $selectedSection == $s->id])>
+                {{ $s->name }}
+            </a>
         @endforeach
     </div>
 
@@ -42,12 +58,15 @@
     @else
         <table>
             <thead>
-                <tr><th>Section</th><th>English</th><th>Japanese</th><th>操作</th></tr>
+                <tr><th>Book / Section</th><th>English</th><th>Japanese</th><th>操作</th></tr>
             </thead>
             <tbody>
             @foreach($words as $w)
                 <tr>
-                    <td><span class="section-tab" style="padding:3px 10px; font-size:0.78rem">{{ $w->section->name }}</span></td>
+                    <td>
+                        <span style="font-size:0.75rem; color:#b0b8d0">{{ $w->section->book->name ?? '' }}</span><br>
+                        <span class="section-tab" style="padding:3px 10px; font-size:0.78rem">{{ $w->section->name }}</span>
+                    </td>
                     <td style="font-weight:600">{{ $w->english }}</td>
                     <td>{{ $w->japanese }}</td>
                     <td>

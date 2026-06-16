@@ -10,12 +10,13 @@ class WordController extends Controller
 {
     public function index(Request $request)
     {
-        $sections = Section::orderBy('name')->get();
         $selectedSection = $request->query('section');
+        $currentSection = $selectedSection ? Section::with('book')->find($selectedSection) : null;
+        $sections = Section::with('book')->orderBy('name')->get();
         $words = $selectedSection
             ? Word::with('section')->where('section_id', $selectedSection)->get()
             : Word::with('section')->get();
-        return view('words.index', compact('words', 'sections', 'selectedSection'));
+        return view('words.index', compact('words', 'sections', 'selectedSection', 'currentSection'));
     }
 
     public function store(Request $request)
@@ -66,8 +67,9 @@ class WordController extends Controller
 
     public function quiz(Request $request)
     {
-        $sections = Section::orderBy('name')->get();
+        $sections = Section::with('book')->orderBy('name')->get();
         $selectedSection = $request->query('section');
+        $currentSection = $selectedSection ? Section::with('book')->find($selectedSection) : null;
 
         $word = $selectedSection
             ? Word::where('section_id', $selectedSection)->inRandomOrder()->first()
@@ -77,8 +79,8 @@ class WordController extends Controller
             return redirect(url('/words'))->with('error', 'まずは単語を追加してください');
         }
 
-        $word->load('section');
-        return view('words.quiz', compact('word', 'sections', 'selectedSection'));
+        $word->load('section.book');
+        return view('words.quiz', compact('word', 'sections', 'selectedSection', 'currentSection'));
     }
 
     public function check(Request $request)

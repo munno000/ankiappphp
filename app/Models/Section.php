@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Section extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'book_id'];
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
 
     public function words()
     {
