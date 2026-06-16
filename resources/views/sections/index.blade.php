@@ -52,12 +52,32 @@
                         <div class="actions">
                             <a href="{{ url('/words') }}?section={{ $section->id }}" class="btn btn-outline btn-sm">単語</a>
                             <a href="{{ url('/quiz') }}?section={{ $section->id }}" class="btn btn-pink btn-sm">クイズ</a>
+                            <a href="{{ url('/sections/' . $section->id . '/export') }}" class="btn btn-export btn-sm">エクスポート</a>
+                            <button type="button" class="btn btn-import btn-sm"
+                                onclick="document.getElementById('import-{{ $section->id }}').style.display='block'; this.style.display='none'">
+                                インポート
+                            </button>
                             <form method="POST" action="{{ url('/books/' . $book->id . '/sections/' . $section->id) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('「{{ $section->name }}」を削除しますか？')">削除</button>
                             </form>
+                        </div>
+                        {{-- インポートフォーム（初期非表示） --}}
+                        <div id="import-{{ $section->id }}" class="import-form" style="display:none; margin-top:10px">
+                            <form method="POST" action="{{ url('/sections/' . $section->id . '/import') }}"
+                                enctype="multipart/form-data" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+                                @csrf
+                                <input type="file" name="file" accept=".xlsx,.xls,.csv" required class="file-input">
+                                <button type="submit" class="btn btn-import btn-sm">アップロード</button>
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    onclick="document.getElementById('import-{{ $section->id }}').style.display='none';
+                                             document.querySelectorAll('.btn-import')[{{ $loop->index * 2 }}].style.display='inline-block'">
+                                    キャンセル
+                                </button>
+                            </form>
+                            <p class="import-hint">※ 1行目をヘッダー（English / Japanese）とするExcelファイル</p>
                         </div>
                     </td>
                 </tr>
@@ -66,5 +86,38 @@
         </table>
     @endif
 </div>
+
+<style>
+    .btn-export {
+        background: linear-gradient(135deg, #6abf88, #8dd4a8);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(106,191,136,0.35);
+    }
+    .btn-import {
+        background: linear-gradient(135deg, #c39be8, #d8b4f8);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(195,155,232,0.35);
+    }
+    .import-form {
+        background: rgba(216,180,248,0.1);
+        border: 1.5px dashed #d8b4f8;
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+    .file-input {
+        font-size: 0.82rem;
+        padding: 6px 8px;
+        border: 1.5px solid #daeeff;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        width: auto;
+    }
+    .import-hint {
+        font-size: 0.78rem;
+        color: #b0b8d0;
+        margin-top: 6px;
+    }
+</style>
 
 @endsection

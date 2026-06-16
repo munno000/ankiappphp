@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SectionExcelController;
 use App\Http\Controllers\WordController;
 
 Route::get('/', fn() => redirect(url('/books')));
@@ -20,6 +21,10 @@ Route::get('/books/{bookId}/sections', [SectionController::class, 'index']);
 Route::post('/books/{bookId}/sections', [SectionController::class, 'store']);
 Route::put('/books/{bookId}/sections/{id}', [SectionController::class, 'update']);
 Route::delete('/books/{bookId}/sections/{id}', [SectionController::class, 'destroy']);
+
+// Excel import / export
+Route::get('/sections/{sectionId}/export', [SectionExcelController::class, 'export']);
+Route::post('/sections/{sectionId}/import', [SectionExcelController::class, 'import']);
 
 // Words & Quiz
 Route::get('/words', [WordController::class, 'index']);
