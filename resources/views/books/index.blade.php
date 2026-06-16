@@ -31,14 +31,7 @@
             <tbody>
             @foreach($books as $book)
                 <tr>
-                    <td>
-                        <form method="POST" action="{{ url('/books/' . $book->id) }}" class="section-edit-form">
-                            @csrf
-                            @method('PUT')
-                            <input type="text" name="name" value="{{ $book->name }}" required>
-                            <button type="submit" class="btn btn-blue btn-sm">更新</button>
-                        </form>
-                    </td>
+                    <td style="font-weight:600">{{ $book->name }}</td>
                     <td>
                         <a href="{{ url('/books/' . $book->id . '/sections') }}" class="section-tab" style="padding:4px 12px">
                             {{ $book->sections_count }}セクション
@@ -47,7 +40,7 @@
                     <td>
                         <div class="actions">
                             <a href="{{ url('/books/' . $book->id . '/sections') }}" class="btn btn-pink btn-sm">開く</a>
-                            <a href="{{ url('/books/' . $book->id . '/edit') }}" class="btn btn-outline btn-sm">編集</a>
+                            <a href="{{ url('/books/' . $book->id . '/edit') }}" class="btn btn-blue btn-sm">編集</a>
                             <form method="POST" action="{{ url('/books/' . $book->id) }}">
                                 @csrf
                                 @method('DELETE')
